@@ -21,4 +21,3 @@ class IdentityInfo:
       print("]")
     except ValueError:
       pass
-
