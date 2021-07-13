@@ -52,20 +52,20 @@ class Governance:
     # get identity access json structure, convert to list of lists of values for treeview
     apiEndpoint = config.cybr["apiEndpoint"]
     projectJson = json.loads(requests.get(apiEndpoint + '/governance').content)
-    projectDict = projectJson["projects"]	# get dict of projects
+    projectDict = projectJson["projects"]	# get list of projects
     projectsValues = []
     if projectDict:
-      for pr in projectDict:              # for each project
+      for pr in projectDict:  # for each project create (projName, (id1-info,...), (id2-info))
         prValues = []
         prValues.append(pr["projectName"])
-        idList = pr["identities"]	  # get dict of ids
-        idKeyList = tuple(idList[0])   # get list of keys in json record
+        idList = pr["identities"]	  # get list of id key/value pairs
+        idKeyList = tuple(idList[0])      # get list of keys 
         for id in idList:		  # for each id
           idValues = [""]		  # initialize with blank value for first column
           for key in idKeyList:		  # get the values for each key
             idValues.append(id[key])      # append just values
-          prValues.append(idValues)
-        projectsValues.append(prValues)
+          prValues.append(idValues)       # append id info row to project
+        projectsValues.append(prValues)   # append project to list of projects
 
     # get max column widths for each column
     maxwidths = [0,15,15,15,15,15,15]
@@ -74,7 +74,7 @@ class Governance:
       self.governTree.destroy()
 
     self.governTree = ttk.Treeview(parent, height=10, columns=self.cols)
-    self.governTree.column("#0", minwidth=0, width=10, stretch=NO)
+    self.governTree.column("#0", minwidth=0, width=20, stretch=NO)
 
     self.governTree['show'] = 'tree headings'
     for c in range(len(self.cols)):
