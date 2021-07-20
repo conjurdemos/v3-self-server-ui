@@ -1,7 +1,10 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import requests
-from requests.auth import HTTPBasicAuth
+import json
+
+import config
 
 class ProjectInfo:
 
@@ -11,9 +14,20 @@ class ProjectInfo:
     projectFrame.columnconfigure(0, weight=1)
     projectFrame.rowconfigure(0, weight=1)
 
+    def lookupProject(projectName):
+      projectJson = json.loads(requests.get(config.cybr["apiEndpoint"]+"/project?projectName="+projectName).content)
+      projectList = projectJson["projects"]	# get list of projects - will be empty or one
+      if projectList:
+        return True
+      else:
+        messagebox.showinfo("Not Found", "No project with name " + projectName + " found.")
+        self.project_entry.focus()
+        return False
+
     ttk.Label(projectFrame, text="Project Name").grid(column=0, row=1, sticky=W)
     self.project = StringVar()
-    self.project_entry = ttk.Entry(projectFrame, width=15, textvariable=self.project)
+    valPr = projectFrame.register(lookupProject)
+    self.project_entry = ttk.Entry(projectFrame, width=15, textvariable=self.project, validate='focusout', validatecommand=(valPr,'%P'))
     self.project_entry.grid(column=2, row=1, sticky=(W, E))
 
     ttk.Label(projectFrame, text="Safe Name").grid(column=0, row=2, sticky=W)
