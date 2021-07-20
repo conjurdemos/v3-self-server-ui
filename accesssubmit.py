@@ -5,6 +5,7 @@ import datetime
 import subprocess
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import requests
 
 from projectinfo import *
@@ -61,3 +62,7 @@ class AccessRequest:
                 + "\"appAuthnMethod\":\"authn-k8s\"" \
                 + "}"
     r = requests.post(url = config.cybr["apiEndpoint"]+"/appgovdb", data = accReqParms)
+    messagebox.showinfo("Access Request Submitted",
+			"Access request SUBMITTED\n\nIdentity: "
+			+ self.projectInfo.project.get() + "/" + self.identityInfo.identity.get()
+			+ "\n\nSafe: " + self.projectInfo.safe.get())
