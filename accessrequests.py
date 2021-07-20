@@ -5,6 +5,7 @@ import datetime
 import subprocess
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import tkinter as tk
 
 import requests
@@ -121,7 +122,11 @@ class AccessRequests:
   def approve(self):
     try:
       selectedReqId = self.unapprTree.popup_menu.selection['RequestId']
+      selectedProject = self.unapprTree.popup_menu.selection['Project']
+      selectedAppId = self.unapprTree.popup_menu.selection['AppId']
+      selectedSafe= self.unapprTree.popup_menu.selection['Safe']
     except LookupError:
+      print("Lookup error in approve.") 
       return
 
     # update approval status of selected access request 
@@ -130,12 +135,20 @@ class AccessRequests:
 
     self.buildUnapprovedTree(self.unapprFrame)		# rebuild unapproved tree w/o approved access request
     self.buildUnprovisionedTree(self.unprovFrame)	# rebuild unprovisioned tree w/ approved access request
+    messagebox.showinfo("Access Approved",
+			"Access request APPROVED\n\nIdentity: "
+			+ selectedProject + "/" + selectedAppId
+			+ "\n\nSafe: " + selectedSafe);
 
 ######################################
   def rejectSubmitted(self):
     try:
       selectedReqId = self.unapprTree.popup_menu.selection['RequestId']
+      selectedProject = self.unapprTree.popup_menu.selection['Project']
+      selectedAppId = self.unapprTree.popup_menu.selection['AppId']
+      selectedSafe= self.unapprTree.popup_menu.selection['Safe']
     except LookupError:
+      print("Lookup error in rejectSubmitted.") 
       return
 
     # update rejected status of selected access request
@@ -143,6 +156,10 @@ class AccessRequests:
     accStatusChangeResponse = requests.put(apiEndpoint).content
 
     self.buildUnapprovedTree(self.unapprFrame)          # rebuild unapproved tree w/o rejected access request
+    messagebox.showinfo("Access Rejected",
+			"Access request REJECTED\n\nIdentity: "
+			+ selectedProject + "/" + selectedAppId
+			+ "\n\nSafe: " + selectedSafe);
 
 ######################################
   def popup(self, event):
@@ -204,7 +221,11 @@ class AccessRequests:
   def provision(self):
     try:
       selectedReqId = self.unprovTree.popup_menu.selection['RequestId']
+      selectedProject = self.unprovTree.popup_menu.selection['Project']
+      selectedAppId = self.unprovTree.popup_menu.selection['AppId']
+      selectedSafe= self.unprovTree.popup_menu.selection['Safe']
     except LookupError:
+      print("Lookup error in provision.") 
       return
 
     # make REST call to provision access request from DB
@@ -212,12 +233,20 @@ class AccessRequests:
 
     self.buildUnprovisionedTree(self.unprovFrame)       # rebuild unprovisioned tree w/o approved access request
     self.buildProvisionedTree(self.provFrame)           # rebuild provisioned tree w/ provisioned access request
+    messagebox.showinfo("Access Provisioned",
+			"Access request GRANTED\n\nIdentity: "
+			+ selectedProject + "/" + selectedAppId
+			+ "\n\nSafe: " + selectedSafe);
 
 ######################################
   def rejectApproved(self):
     try:
       selectedReqId = self.unprovTree.popup_menu.selection['RequestId']
+      selectedProject = self.unprovTree.popup_menu.selection['Project']
+      selectedAppId = self.unprovTree.popup_menu.selection['AppId']
+      selectedSafe= self.unprovTree.popup_menu.selection['Safe']
     except LookupError:
+      print("Lookup error in rejectApproved.") 
       return
 
     # update rejected status of selected access request 
@@ -225,6 +254,10 @@ class AccessRequests:
     accStatusChangeResponse = requests.put(apiEndpoint).content
 
     self.buildUnprovisionedTree(self.unprovFrame)	# rebuild unprovisioned tree w/o rejected access request
+    messagebox.showinfo("Access Rejected",
+			"Access request REJECTED\n\nIdentity: "
+			+ selectedProject + "/" + selectedAppId
+			+ "\n\nSafe: " + selectedSafe);
 
 ######################################
   def buildProvisionedTree(self,parent):
@@ -278,13 +311,21 @@ class AccessRequests:
   def revokeAccess(self):
     try:
       selectedReqId= self.provTree.popup_menu.selection['RequestId']
+      selectedProject = self.provTree.popup_menu.selection['Project']
+      selectedAppId = self.provTree.popup_menu.selection['AppId']
+      selectedSafe= self.provTree.popup_menu.selection['Safe']
     except LookupError:
+      print("Lookup error in revokeAccess.") 
       return
 
     # revoke access request 
     r = requests.delete(url = config.cybr["apiEndpoint"] + "/provision?accReqId=" + selectedReqId, data = "")
 
     self.buildProvisionedTree(self.provFrame)           # rebuild provisioned tree w/o revoked access request
+    messagebox.showinfo("Access Revoked",
+			"Access request REVOKED\n\nIdentity: "
+			+ selectedProject + "/" + selectedAppId
+			+ "\n\nSafe: " + selectedSafe);
 
 ######################################
   def refresh(self, *args):
