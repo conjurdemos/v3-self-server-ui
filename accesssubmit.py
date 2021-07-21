@@ -47,8 +47,6 @@ class AccessRequest:
   # Writes form input variables to MySQL database
   def write_to_db(self, *args):
     approved = 0
-    if self.projectInfo.env.get() == 'dev':	# auto-approve requests for dev environments
-      approved = 1
     accReqParms= "{" \
                 + "\"projectName\":\"" + self.projectInfo.project.get() + "\"," \
                 + "\"requestor\":\"" + self.projectInfo.requestor.get() + "\"," \
