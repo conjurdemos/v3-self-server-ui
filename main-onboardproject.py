@@ -1,9 +1,9 @@
 from loginwin import *
-from projectonboard import *
+from onboardproject import *
 
 root = Tk()
 root.protocol("WM_DELETE_WINDOW", sys.exit)
-root.title("Project Onboarding")
+root.title("Onboard Project")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
@@ -18,5 +18,5 @@ logoLabel.image = logoImg
 logoLabel.grid(column=0, row=0, columnspan=5)
 
 LoginWin(root)
-ProjectOnboard(root)
+OnboardProject(root)
 root.mainloop()

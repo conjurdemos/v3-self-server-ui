@@ -9,7 +9,7 @@ import json
 
 import config
 
-class ProjectOnboard:
+class OnboardProject:
 
   def __init__(self, parent):
     mainframe = ttk.Frame(parent, padding="12 12 12 12")
@@ -98,7 +98,6 @@ class ProjectOnboard:
 
   ######################################
   def save(self, *args):
-    print("name valid: ",self.projectFrame.dataValidated['name'],"\nadmin valid: ",self.projectFrame.dataValidated['admin'])
     if self.projectFrame.dataValidated['name'] and self.projectFrame.dataValidated['admin']:
       self.write_to_db()
       sys.exit(0)
