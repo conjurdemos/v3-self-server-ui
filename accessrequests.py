@@ -104,8 +104,8 @@ class AccessRequests:
     # setup popup menu for approvals
     self.unapprTree.popup_menu = tk.Menu(self.unapprTree, tearoff=0)
     self.unapprTree.popup_menu.add_command(label="Approve", command=self.approve)
-    self.unapprTree.popup_menu.add_command(label="Reject", command=self.rejectSubmitted)
     self.unapprTree.popup_menu.add_separator()
+    self.unapprTree.popup_menu.add_command(label="Reject", command=self.rejectSubmitted)
     def do_popup(event):
       # display the popup menu
       try:
@@ -203,8 +203,8 @@ class AccessRequests:
     # setup popup menu for provisioning
     self.unprovTree.popup_menu = tk.Menu(self.unprovTree, tearoff=0)
     self.unprovTree.popup_menu.add_command(label="Provision", command=self.provision)
-    self.unprovTree.popup_menu.add_command(label="Reject", command=self.rejectApproved)
     self.unprovTree.popup_menu.add_separator()
+    self.unprovTree.popup_menu.add_command(label="Reject", command=self.rejectApproved)
     def do_popup(event):
       # display the popup menu
       try:
@@ -294,7 +294,6 @@ class AccessRequests:
     # setup popup menu for revoking access
     self.provTree.popup_menu = tk.Menu(self.provTree, tearoff=0)
     self.provTree.popup_menu.add_command(label="Revoke Access", command=self.revokeAccess)
-    self.provTree.popup_menu.add_separator()
     def do_popup(event):
       # display the popup menu
       try:

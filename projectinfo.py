@@ -1,9 +1,14 @@
+import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 import requests
-from requests.auth import HTTPBasicAuth
+import json
+
+import config
 
 class ProjectInfo:
+  dataValidated={'name':False,'safe':False}	# all must be True to submit request
 
   def __init__(self, parent):
     projectFrame = ttk.LabelFrame(parent, text='Project Info',padding="3 3 12 12")
@@ -11,14 +16,42 @@ class ProjectInfo:
     projectFrame.columnconfigure(0, weight=1)
     projectFrame.rowconfigure(0, weight=1)
 
+    def lookupProject(projectName):
+      if projectName == "":
+        return False
+      projectJson = json.loads(requests.get(config.cybr["apiEndpoint"]+"/project?projectName="+projectName).content)
+      projectList = projectJson["projects"]
+      if projectList:
+        ProjectInfo.dataValidated['name'] = True
+        return True
+      else:
+        messagebox.showinfo("Not Found", "No project with name " + projectName + " found.")
+        self.project_entry.focus()
+        return False
+
     ttk.Label(projectFrame, text="Project Name").grid(column=0, row=1, sticky=W)
     self.project = StringVar()
-    self.project_entry = ttk.Entry(projectFrame, width=15, textvariable=self.project)
+    valPr = projectFrame.register(lookupProject)
+    self.project_entry = ttk.Entry(projectFrame, width=15, textvariable=self.project, validate='focusout', validatecommand=(valPr,'%P'))
     self.project_entry.grid(column=2, row=1, sticky=(W, E))
+
+    def lookupSafe(safeName):
+      if safeName == "":
+        return False
+      safeJson = json.loads(requests.get(config.cybr["apiEndpoint"]+"/safe?safeName="+safeName).content)
+      safeList = safeJson["safes"]	# get list of safes - will be empty or one
+      if safeList:
+        ProjectInfo.dataValidated['safe'] = True
+        return True
+      else:
+        messagebox.showinfo("Not Found", "No safe with name " + safeName + " found.")
+        self.safe_entry.focus()
+        return False
 
     ttk.Label(projectFrame, text="Safe Name").grid(column=0, row=2, sticky=W)
     self.safe = StringVar()
-    self.safe_entry = ttk.Entry(projectFrame, width=15, textvariable=self.safe)
+    valSf = projectFrame.register(lookupSafe)
+    self.safe_entry = ttk.Entry(projectFrame, width=15, textvariable=self.safe, validate='focusout', validatecommand=(valSf,'%P'))
     self.safe_entry.grid(column=2, row=2, sticky=(W, E))
 
     ttk.Label(projectFrame, text="Requestor").grid(column=0, row=3, sticky=W)
