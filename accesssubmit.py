@@ -19,9 +19,9 @@ class AccessRequest:
     mainframe = ttk.Frame(parent, padding="12 12 12 12")
     mainframe.grid(column=0, row=1, sticky=(N, W, E, S))
 
-    projectFrame = ttk.Frame(mainframe, padding="10 10 10 10", style='Cybr.TFrame')
-    projectFrame.grid(column=0, row=0, sticky=(N, W, E, S))
-    self.projectInfo = ProjectInfo(projectFrame)
+    self.projectFrame = ttk.Frame(mainframe, padding="10 10 10 10", style='Cybr.TFrame')
+    self.projectFrame.grid(column=0, row=0, sticky=(N, W, E, S))
+    self.projectInfo = ProjectInfo(self.projectFrame)
 
     identityFrame = ttk.Frame(mainframe, padding="10 10 10 10", style='Cybr.TFrame')
     identityFrame.grid(column=0, row=1, sticky=(N, W, E, S))
@@ -40,8 +40,14 @@ class AccessRequest:
 
   ######################################
   def submit(self, *args):
-    self.write_to_db()
-    sys.exit(0)
+    if self.projectInfo.dataValidated['name'] and self.projectInfo.dataValidated['safe']:
+      self.write_to_db()
+      sys.exit(0)
+    else:
+      self.projectFrame.bell()
+      messagebox.showinfo("Data Incorrect", "Please enter valid values for Project Name and Safe Name.")
+      tk._default_root.grab_set()
+      tk._default_root.grab_release()
 
   ##############################
   # Writes form input variables to MySQL database

@@ -3,7 +3,7 @@ from onboardproject import *
 
 root = Tk()
 root.protocol("WM_DELETE_WINDOW", sys.exit)
-root.title("Onboard Project")
+root.title("New Project Onboarding")
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 

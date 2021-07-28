@@ -12,8 +12,22 @@ import config
 class OnboardProject:
 
   def __init__(self, parent):
+    # Window layout:
+    #   logo, parent, row 0
+    #   title label, parent, row 1
+    #   mainframe, parent, row 2
+    #     baseframe, mainframe, row 0
+    #       projectframe, baseframe, row 0
+    #         projectname, projectframe, row 0, validation validProjectName
+    #         adminname, projectframe, row 1, validation adminIsEpvUser
+    #         billingcode, projectframe, row 2
+    #   savebutton, parent, row 3
+
+    onboardLabel = ttk.Label(parent,text='New Project Onboarding',font=('Helvetica bold',32),anchor='center')
+    onboardLabel.grid(column=0, row=1, sticky=(N, W, E, S), columnspan=3)
+
     mainframe = ttk.Frame(parent, padding="12 12 12 12")
-    mainframe.grid(column=0, row=1, sticky=(N, W, E, S))
+    mainframe.grid(column=0, row=2, sticky=(N, W, E, S))
 
     baseFrame = ttk.Frame(mainframe, padding="10 10 10 10", style='Cybr.TFrame')
     baseFrame.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -26,12 +40,12 @@ class OnboardProject:
 
     #############################################################
     # Project name entry
-    ttk.Label(self.projectFrame, text="Project Name").grid(column=0, row=1, sticky=W)
+    ttk.Label(self.projectFrame, text="Project Name").grid(column=0, row=0, sticky=W)
     self.project = StringVar()
     self.project_entry = ttk.Entry(self.projectFrame, width=15, textvariable=self.project)
-    self.project_entry.grid(column=2, row=1, sticky=(W, E))
+    self.project_entry.grid(column=2, row=0, sticky=(W, E))
 
-    def projectExists(projectName):	# callback to validate non-blank unique project name 
+    def validProjectName(projectName):	# callback to validate non-blank unique project name 
       if projectName == "":
         messagebox.showinfo("Project Name Required", "Project name cannot be empty.")
         tk._default_root.grab_set()
@@ -41,7 +55,8 @@ class OnboardProject:
       projectJson = json.loads(requests.get(config.cybr["apiEndpoint"]+"/project?projectName="+projectName).content)
       projectList = projectJson["projects"]	# get list of projects - will be empty or one
       if projectList:
-        messagebox.showinfo("Project Exists", "There is an existing project named " + projectName + "\n\nName must be unique.")
+        messagebox.showinfo("Project Exists", "There is an existing project named " + projectName + "\n\nName for a new project must be unique.")
+
         tk._default_root.grab_set()
         tk._default_root.grab_release()
         self.projectFrame.dataValidated['name']= False
@@ -50,15 +65,15 @@ class OnboardProject:
         self.projectFrame.dataValidated['name']= True
         return True
 
-    valPr = self.project_entry.register(projectExists)
+    valPr = self.project_entry.register(validProjectName)
     self.project_entry.config(validate='focusout', validatecommand=(valPr,'%P'))
 
     #############################################################
     # Admin user entry
-    ttk.Label(self.projectFrame, text="Admin Name").grid(column=0, row=2, sticky=W)
+    ttk.Label(self.projectFrame, text="Admin Name").grid(column=0, row=1, sticky=W)
     self.admin = StringVar()
     self.admin_entry = ttk.Entry(self.projectFrame, width=15, textvariable=self.admin)
-    self.admin_entry.grid(column=2, row=2, sticky=(W, E))
+    self.admin_entry.grid(column=2, row=1, sticky=(W, E))
 
     def adminIsEpvUser(adminName):	# callback for project admin user validation in PAS
       if adminName == "":
@@ -84,10 +99,10 @@ class OnboardProject:
 
     #############################################################
     # Billing code entry
-    ttk.Label(self.projectFrame, text="Billing Code").grid(column=0, row=3, sticky=W)
+    ttk.Label(self.projectFrame, text="Billing Code").grid(column=0, row=2, sticky=W)
     self.billing = StringVar()
     billing_entry = ttk.Entry(self.projectFrame, width=15, textvariable=self.billing)
-    billing_entry.grid(column=2, row=3, sticky=(W, E))
+    billing_entry.grid(column=2, row=2, sticky=(W, E))
 
     ttk.Button(parent, text="Save", command=self.save, style='Cybr.TButton').grid(column=3, row=3, sticky=E)
 
