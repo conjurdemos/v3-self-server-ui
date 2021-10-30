@@ -4,3 +4,4 @@ if [[ "$(uname -s)" == "Linux" ]]; then
 else # MacOS
   brew install python3 python-tk
 fi
+pip3 install requests
