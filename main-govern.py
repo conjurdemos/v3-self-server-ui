@@ -8,9 +8,9 @@ root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
 
 s = ttk.Style()
-s.configure('Cybr.TFrame', background='cornflower blue', borderwidth=5, relief='raised')
-s.configure('Cybr.TLabel', background='cornflower blue', borderwidth=5, relief='raised')
-s.configure('Cybr.TButton', background='cornflower blue', borderwidth=5, relief='raised')
+s.configure('Cybr.TFrame', borderwidth=5, relief='raised')
+s.configure('Cybr.TLabel', borderwidth=5, relief='raised')
+s.configure('Cybr.TButton', borderwidth=5, relief='raised')
 
 logoImg = PhotoImage(file='CORPORATE_LOGO.png')
 logoLabel = ttk.Label(root, image=logoImg, compound='center')
